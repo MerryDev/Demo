@@ -25,7 +25,7 @@ jobs:
         id: extract_branch
 
       - name: Pull repository
-        run: git pull origin HEAD:${{ steps.extract_branch.outputs.branch }}
+        run: git pull origin HEAD:${{ steps.extract_branch.outputs.branch }} --allow-unrelated-histories
 
       - name: Bump Version
         run: |
