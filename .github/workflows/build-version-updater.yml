@@ -24,8 +24,8 @@ jobs:
         run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
         id: extract_branch
 
-      - name: Pull repository
-        run: git pull origin ${{ steps.extract_branch.outputs.branch }}
+      - name: Merge branches
+        run: git merge
 
       - name: Bump Version
         run: |
