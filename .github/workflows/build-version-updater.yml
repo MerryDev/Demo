@@ -15,8 +15,8 @@ jobs:
 
       - name: Configure Git
         run: |
-          git config --global user.name "GitHub Actions"
-          git config --global user.email "<>"
+          git config --global user.name "QuantraxNET"
+          git config --global user.email "github@quantrax.net"
 
       - name: Extract branch name
         id: extract_branch
@@ -39,5 +39,5 @@ jobs:
       - name: Commit changes
         run: |
           export CONTENT="$(base64 -w 0 build.gradle.kts)"
-          export SHA="$(git rev-parse develop:build.gradle.kts)"
+          export SHA="$(git rev-parse ${{ steps.extract_branch.outputs.branch }}:build.gradle.kts)"
           echo "$CONTENT -- $SHA"
