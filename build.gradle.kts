@@ -3,4 +3,4 @@ plugins {
 }
 
 group = "net.quantrax"
-version = "24.3.0.0"
+version = "24.3.0.1+da1b14d"
