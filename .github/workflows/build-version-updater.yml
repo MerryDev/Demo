@@ -10,25 +10,39 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ssh-key: ${{ secrets.DEPLOY_KEY }}
 
       - name: Configure Git
         run: |
           git config --global user.name "GitHub Actions"
           git config --global user.email "<>"
-          git config pull.rebase false
 
       - name: Extract branch name
+        id: extract_branch
         shell: bash
         run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
-        id: extract_branch
+
+      - name: Pull repository
+        run: git fetch origin ${{ steps.extract_branch.outputs.branch }}
 
       - name: Bump Version
+        id: bump_version
         run: |
-          current_version=$(grep -oP '(?<=version = ").*(?=")' build.gradle.kts)
-          new_version=$(echo "$current_version" | awk -F. '{$NF=$NF+1; OFS=FS}1' | tr ' ' '.')
-          commit_hash=$(git rev-parse --short HEAD)
-          new_version_with_hash="$new_version+$commit_hash"
-          sed -i "s/version = \".*\"/version = \"$new_version_with_hash\"/" build.gradle.kts
-          git add build.gradle.kts
-          git commit -m "Bump version to $new_version_with_hash"
-          git push origin ${{ steps.extract_branch.outputs.branch }}
+          CURRENT_VERSION=$(grep -oP '(?<=version = ").*(?=")' build.gradle.kts)
+          NEW_VERSION=$(echo "$CURRENT_VERSION" | awk -F. '{$NF=$NF+1; OFS=FS}1' | tr ' ' '.')
+          COMMIT_HASH=$(git rev-parse --short HEAD)
+          NEW_VERSION_WITH_HASH="$NEW_VERSION+$COMMIT_HASH"
+          sed -i "s/version = \".*\"/version = \"$NEW_VERSION_WITH_HASH\"/" build.gradle.kts
+          echo "version=$NEW_VERSION_WITH_HASH" >> $GITHUB_OUTPUT
+
+      - name: Commit changes
+        shell: bash
+        run: |
+          curl -L \
+          -X PUT \
+          -H "Accept: application/vnd.github+json" \
+          -H "Authorization: Bearer ${{ github.token }}" \
+          -H "X-GitHub-Api-Version: 2022-11-28" \
+          https://api.github.com/repos/MerryDev/Demo/contents/build.gradle.kts \
+          -d '{"message":"Bump version to ${{ steps.bump_version.outputs.version }}","committer":{"name":"QuantraxNET","email":"<github@quantrax.net>"},"content":"$( base64 -i build.gradle.kts )","sha":"$( git rev-parse develop:build.gradle.kts)"}'
