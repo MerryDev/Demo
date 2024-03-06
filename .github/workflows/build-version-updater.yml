@@ -35,4 +35,4 @@ jobs:
           sed -i "s/version = \".*\"/version = \"$new_version_with_hash\"/" build.gradle.kts
           git add build.gradle.kts
           git commit -m "Bump version to $new_version_with_hash"
-          git push origin HEAD:${{ steps.extract_branch.outputs.branch }}
+          git push -f origin HEAD:${{ steps.extract_branch.outputs.branch }}
