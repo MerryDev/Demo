@@ -35,6 +35,8 @@ jobs:
           sed -i "s/version = \".*\"/version = \"$new_version_with_hash\"/" build.gradle.kts
 
       - name: Commit changes
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           export TODAY=$( date -u '+%Y-%m-%d' )
           export MESSAGE="chore: regenerate build.gradle.kts for $TODAY"
