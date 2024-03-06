@@ -33,6 +33,16 @@ jobs:
           commit_hash=$(git rev-parse --short HEAD)
           new_version_with_hash="$new_version+$commit_hash"
           sed -i "s/version = \".*\"/version = \"$new_version_with_hash\"/" build.gradle.kts
-          git add build.gradle.kts
-          git commit -m "Bump version to $new_version_with_hash"
-          git push origin HEAD:${{ steps.extract_branch.outputs.branch }}
+
+      - name: Commit changes
+        run: |
+          export TODAY=$( date -u '+%Y-%m-%d' )
+          export MESSAGE="chore: regenerate build.gradle.kts for $TODAY"
+          export SHA=$( git rev-parse develop:build.gradle.kts )
+          export CONTENT=$( base64 -i build.gradle.kts )
+          gh api --method PUT /repos/:owner/:repo/contents/build.gradle.kts \
+          --field message="$MESSAGE" \
+          --field content="$CONTENT" \
+          --field encoding="base64" \
+          --field branch="$DESTINATION_BRANCH" \
+          --field sha="$SHA"
