@@ -13,11 +13,6 @@ jobs:
         with:
           ssh-key: ${{ secrets.DEPLOY_KEY }}
 
-      - name: Configure Git
-        run: |
-          git config --global user.name "GitHub Actions"
-          git config --global user.email "<>"
-
       - name: Extract branch name
         id: extract_branch
         shell: bash
@@ -49,4 +44,4 @@ jobs:
           -H "Authorization: Bearer ${{ github.token }}" \
           -H "X-GitHub-Api-Version: 2022-11-28" \
           https://api.github.com/repos/MerryDev/Demo/contents/build.gradle.kts \
-          -d '{"message":"Bump version to ${{ steps.bump_version.outputs.version }}","committer":{"name":"github-actions","email":"<>"},"content":"$CONTENT","sha":"$SHA"}'
+          -d '{"message":"Bump version to ${{ steps.bump_version.outputs.version }}","committer":{"name":"github-actions","email":"no-reply@quantrax.net"},"content":"$CONTENT","sha":"$SHA"}'
