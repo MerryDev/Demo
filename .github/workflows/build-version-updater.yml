@@ -24,7 +24,7 @@ jobs:
         id: extract_branch
 
       - name: Pull repository
-        run: git fetch ${{ steps.extract_branch.outputs.branch }}
+        run: git fetch origin ${{ steps.extract_branch.outputs.branch }}
 
       - name: Bump Version
         run: |
