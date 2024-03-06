@@ -42,7 +42,7 @@ jobs:
           export MESSAGE="chore: regenerate build.gradle.kts for $TODAY"
           export SHA=$( git rev-parse develop:build.gradle.kts )
           export CONTENT=$( base64 -i build.gradle.kts )
-          gh api --method PUT /repos/:owner/:repo/contents/build.gradle.kts \
+          gh api --method PUT /repos/:MerryDev/:Demo/contents/build.gradle.kts \
           --field message="$MESSAGE" \
           --field content="$CONTENT" \
           --field encoding="base64" \
