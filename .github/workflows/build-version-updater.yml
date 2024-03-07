@@ -10,8 +10,14 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Import GPG key
+        uses: crazy-max/ghaction-import-gpg@v4
         with:
-          ssh-key: ${{ secrets.DEPLOY_KEY }}
+          gpg_private_key: ${{ secrets.DEPLOY_KEY }}
+          passphrase: ""
+          git_user_signingkey: true
+          git_commit_gpgsign: true
 
       - name: Configure Git
         run: |
@@ -38,6 +44,6 @@ jobs:
 
       - name: Commit changes
         run: |
-          export CONTENT="$(base64 -w 0 build.gradle.kts)"
-          export SHA="$(git rev-parse ${{ steps.extract_branch.outputs.branch }}:build.gradle.kts)"
-          echo "$CONTENT -- $SHA"
+          git add build.gradle.kts
+          git commit -S -m "Bump version to ${{ steps.bump_version.outputs.version }}"
+          git push
