@@ -47,6 +47,7 @@ jobs:
 
       - name: Commit changes
         run: |
+          git pull
           git add build.gradle.kts
           git commit -S -m "Bump version to ${{ steps.bump_version.outputs.version }}"
           git push origin HEAD:${{ steps.extract_branch.outputs.branch }}
