@@ -10,6 +10,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          token: ${{ github.token }}
 
       - name: Import GPG key
         id: import-gpg
@@ -22,8 +24,8 @@ jobs:
 
       - name: Configure Git
         run: |
-          git config --global user.name "QuantraxNET"
-          git config --global user.email "github@quantrax.net"
+          git config --global user.name "QuantraxDev"
+          git config --global user.email "dev@quantrax.net"
 
       - name: Extract branch name
         id: extract_branch
